@@ -40,7 +40,8 @@ class ConfigClassMeta(type):
 class ConfigClassMixin(metaclass=ConfigClassMeta):
     """Mixin for configuration classes.
     Requirements for class members are:
-        - All has to be upper case (if they do not start with underscore)
+        - All class fields (variables) have to be upper case (if they do
+            not start with an underscore)
         - There is no constructor in the class (no instance is allowed)
         - There are no standard (instance) methods in the class, only
             class methods and static methods are allowed.

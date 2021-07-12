@@ -52,3 +52,40 @@ print(SomeClass._some_variable)  # >>> 9
 ```
 As you can see, class-level properties behave very
 naturally.
+
+## Configuration classes
+Configuration classes usually follow some standard
+pattern, mainly:
+ - All class fields (variables) have to be upper case
+   (if they do not start with an underscore)
+ - There is no constructor in the class
+   (no instance is allowed)
+ - There are no standard (instance level) methods in the
+   class. Only class methods and static methods are allowed.
+
+It is incredibly helpful to have some validator for
+a class that checks if all these conditions are followed.
+This is exactly what ConfigClassMixin does. Consider
+the following use-case:
+
+```python
+import classutilities
+
+class SomeConfigClass(classutilities.ConfigClassMixin):
+    # This is OK:
+    DATABASE_HOST = "localhost"
+    DATABASE_NAME = "testing"
+    # ...
+    # This is NOT ok:
+    database_password = "pass"  # NO! Must be lowercase
+    # This is OK:
+    @classmethod
+    def connect_to_database(cls):
+        return ...
+    # This is NOT OK:
+    def check_parameters(self):  # No instance-level methods
+        ...
+```
+Mixin `ConfigClassMixin` can be used together with
+mixin for class-level properties. Class level properties
+are also acceptable (this filter allows them).
