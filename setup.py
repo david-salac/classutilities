@@ -3,7 +3,7 @@ import pathlib
 
 
 def get_version(rel_path):
-    """Get the version of library
+    """Get the version of the library
     Args:
         rel_path (str): Relative path to __init__.py with version.
     Returns:
@@ -24,7 +24,8 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="classutilities",
     version=get_version('src/classutilities/__init__.py'),
-    description="Class utilities",
+    description="A simple package that allows having class-level properties "
+                "and validator for typical configuration classes.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/david-salac/classutilities",

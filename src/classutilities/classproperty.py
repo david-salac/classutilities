@@ -1,15 +1,18 @@
-# Allows to have property on class level (and instance level)
+# Allows creating a class level property
 from typing import Any, Callable
 
 
 class ClassPropertyContainer(object):
-    """Allows to create class level property (functionality for decorator)"""
+    """
+    Allows creating a class level property (functionality for
+    decorator).
+    """
 
     def __init__(self, prop_get: Any, prop_set: Any = None):
         """
-        Create a container that allows to have class property decorator.
-        :param prop_get: Getter.
-        :param prop_set: Setter.
+        Container that allows having a class property decorator.
+        :param prop_get: Class property getter.
+        :param prop_set: Class property setter.
         """
         self.prop_get: Any = prop_get
         self.prop_set: Any = prop_set
@@ -17,9 +20,9 @@ class ClassPropertyContainer(object):
     def __get__(self, obj: Any, cls: type = None) -> Callable:
         """
         Get the property getter.
-        :param obj: Instance of class.
-        :param cls: Type of class.
-        :return: Class property getter
+        :param obj: Instance of the class.
+        :param cls: Type of the class.
+        :return: Class property getter.
         """
         if cls is None:
             cls = type(obj)
@@ -28,12 +31,12 @@ class ClassPropertyContainer(object):
     def __set__(self, obj, value) -> Callable:
         """
         Get the property setter.
-        :param obj: Instance of class.
-        :param value: Value to be set.
+        :param obj: Instance of the class.
+        :param value: A value to be set.
         :return: Class property setter.
         """
         if not self.prop_set:
-            raise AttributeError("can't set attribute")
+            raise AttributeError("cannot set attribute")
         _type: type = type(obj)
         if _type == ClassPropertyMetaClass:
             _type = obj
@@ -41,9 +44,9 @@ class ClassPropertyContainer(object):
 
     def setter(self, func: Callable) -> 'ClassPropertyContainer':
         """
-        Allows to create setter in a property like way.
+        Allows creating setter in a property like way.
         :param func: Getter function.
-        :return: Setter object for decorator.
+        :return: Setter object for the decorator.
         """
         if not isinstance(func, (classmethod, staticmethod)):
             func = classmethod(func)
@@ -53,33 +56,35 @@ class ClassPropertyContainer(object):
 
 def classproperty(func):
     """
-    Create decorator for class level property
-    :param func: Function that is to be decorated
-    :return: Modify method to be a class level property.
+    Create a decorator for a class level property.
+    :param func: This class method is decorated.
+    :return: Modified class method behaving like a class property.
     """
     if not isinstance(func, (classmethod, staticmethod)):
-        # Method has to be a classmethod
+        # The method must be a classmethod (or staticmethod)
         func = classmethod(func)
     return ClassPropertyContainer(func)
 
 
 class ClassPropertyMetaClass(type):
     """
-    Meta class that allows setter.
+    Metaclass that allows creating a standard setter.
     """
+
     def __setattr__(self, key, value):
-        """Overload setter for class"""
+        """Overloads setter for class"""
         if key in self.__dict__:
             obj = self.__dict__.get(key)
         if obj and type(obj) is ClassPropertyContainer:
             return obj.__set__(self, value)
 
-        return super(ClassPropertyMetaClass, self).__setattr__(key, value)
+        return super(ClassPropertyMetaClass,
+                     self).__setattr__(key, value)
 
 
 class ClassPropertiesMixin(metaclass=ClassPropertyMetaClass):
     """
-    This mixin allows to use class properties setter (getter works correctly
-    even without this mixin)
+    This mixin allows using class properties setter (getter works
+    correctly even without this mixin)
     """
     pass
