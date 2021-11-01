@@ -1,5 +1,6 @@
 # Impose a filter on class members for configuration classes
 
+
 class ConfigClassMeta(type):
     """
     Metaclass that validates class variables in configuration class.
